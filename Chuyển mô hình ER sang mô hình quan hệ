@@ -1,20 +1,35 @@
 Bước 1: Chuyển tất cả tập thực thể sang mô hình quan hệ
+
 - Thuộc tính thường chuyển sang bổ sung kiểu dữ liệu
+
 - Thuộc tính khóa chuyển sang phải gạch chân nét liền
+
 - Thuộc tính kết hợp chuyển sang phải chú thích phần kết hợp
+
 - Thuộc tính đa trị thì lập một bảng riêng có khóa ngoại trỏ đến bảng chính
 
+
 Bước 2: Đối với mối kết hợp nhiều - nhiều
+
 - Lập ra một bảng riêng có tên của mối kết hợp
+
 - Bổ sung một cặp khóa chính gồm khóa chính của hai bảng
+
 - Đồng thời mỗi khóa chính cũng là khóa ngoại trỏ về hai bảng
 
+
 Bước 3: Đối với mối kết hợp một - nhiều
+
 - Bổ sung khóa ngoại vào bảng một
+
 - Trỏ khóa ngoại của bảng một về bảng nhiều
 
+
 Bước 4: Đối với mối kết hợp một - một
+
 - Bổ sung khóa ngoại vào một hoặc cả hai bảng
+
 - Trỏ khóa ngoại của bảng này đến bảng kia
 
-Chú ý: Khóa ngoại gạch chân nét chấm và cùng kiểu dữ liệu với khóa chính trỏ đến.
+
+Chú ý: Khóa ngoại gạch chân nét chấm và cùng kiểu dữ liệu với khóa chính trỏ đến
