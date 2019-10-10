@@ -1,0 +1,68 @@
+/*
+1. Tìm những nhân viên làm việc ở phòng số 4
+SELECT * FROM NHANVIEN WHERE PHG = 4
+2. Tìm những nhân viên có mức lương trên 30000
+SELECT * FROM NHANVIEN WHERE LUONG > 30000
+3. Tìm các nhân viên có mức lương trên 25,000 ở phòng 4 hoặc các nhân viên có mức lương trên 30,000 ở phòng 5
+SELECT * FROM NHANVIEN WHERE (LUONG > 25000 AND PHG = 4) OR (LUONG > 30000 AND PHG = 5)
+4. Cho biết họ tên đầy đủ của các nhân viên có họ bắt đầu bằng ký tự ‘N’
+SELECT HONV, TENLOT, TENNV FROM NHANVIEN WHERE HONV LIKE N'N%'
+5. Cho biết các nhân viên sinh trước năm 1975
+SELECT * FROM NHANVIEN WHERE YEAR(NGSINH) < 1975
+6. Cho biết các nhân viên sinh trước ngày 30/4/1975 hoặc ở TP HCM hoặc làm việc tại phòng số 4
+SELECT * FROM NHANVIEN WHERE (YEAR(NGSINH) < 1975) OR (DCHI LIKE N'%Tp hcm') OR (PHG = 4)
+7. Với mỗi phòng ban, cho biết tên phòng ban và địa điểm phòng
+SELECT P.TENPHG, D.DIADIEM FROM PHONGBAN P, DIADIEM_PHG D WHERE P.MAPHG = D.MAPHG
+8. Tìm tên những người trưởng phòng của từng phòng ban
+SELECT TENNV FROM NHANVIEN N, PHONGBAN P WHERE N.MANV = P.TRPHG
+9. Tìm tên và địa chỉ của tất cả các nhân viên của phòng "Nghiên cứu".
+SELECT TENNV, DCHI FROM NHANVIEN N, PHONGBAN P WHERE N.PHG = P.MAPHG AND P.TENPHG LIKE N'Nghiên cứu'
+10. Với mọi đề án ở "Ha Noi", liệt kê các mã số đề án (MADA), mã số phòng ban chủ trì đề án (PHONG), họ tên trưởng phòng
+(HONV, TENLOT, TENNV) cũng như địa chỉ (DCHI) và ngày sinh (NGSINH) của người ấy.
+SELECT D.MADA, D.PHONG, N.HONV, N.TENLOT, N.TENNV, N.DCHI, N.NGSINH FROM NHANVIEN N, PHONGBAN P, DEAN D WHERE N.MANV = P.TRPHG AND P.MAPHG = D.PHONG AND DDIEM_DA LIKE N'Hà Nội'
+11. Cho biết tên các đề án mà nhân viên Đinh Bá Tiến đã tham gia
+SELECT D.TENDA FROM NHANVIEN N, PHANCONG P, DEAN D WHERE N.MANV = P.MA_NVIEN AND P.MADA = D.MADA AND (HONV + ' ' + TENLOT + ' ' + TENNV) = N'Đinh Bá Tiên' 
+12. Cho biết số lượng đề án của công ty
+SELECT COUNT(MADA) AS SODEAN FROM DEAN
+13. Cho biết số lượng đề án do phòng 'Nghiên Cứu' chủ trì
+SELECT COUNT(D.MADA) AS SODEAN FROM DEAN D, PHONGBAN P WHERE D.PHONG = P.MAPHG AND P.TENPHG LIKE N'Nghiên cứu'
+14. Cho biết lương trung bình của các nữ nhân viên
+SELECT AVG(LUONG) AS LUONGTB FROM NHANVIEN WHERE PHAI LIKE N'Nữ'
+15. Với mỗi nhân viên, cho biết số lượng nhân viên mà nhân viên đó quản lý trực tiếp.
+SELECT Q.TENNV, COUNT(N.MANV) AS SONV FROM NHANVIEN N, NHANVIEN Q WHERE N.MA_NQL = Q.MANV GROUP BY Q.TENNV
+16. Với mỗi phòng ban, liệt kê tên phòng ban (TENPHG) và lương trung bình của những nhân viên làm việc cho phòng ban đó.
+SELECT P.TENPHG, AVG(N.LUONG) AS LUONGTB FROM NHANVIEN N, PHONGBAN P WHERE N.PHG = P.MAPHG GROUP BY P.TENPHG
+17. Với mỗi phòng ban, cho biết tên phòng ban và số lượng đề án mà phòng ban đó chủ trì
+SELECT P.TENPHG, COUNT(D.MADA) AS SODEAN FROM PHONGBAN P, DEAN D WHERE P.MAPHG = D.PHONG GROUP BY P.TENPHG
+18. Với mỗi phòng ban, cho biết tên phòng ban, họ tên người trưởng phòng và số lượng đề án mà phòng ban đó chủ trì
+SELECT P.TENPHG, N.HONV, N.TENLOT, N.TENNV, COUNT(D.MADA) AS SODEAN FROM PHONGBAN P, DEAN D, NHANVIEN N WHERE P.MAPHG = D.PHONG AND P.TRPHG = N.MANV GROUP BY P.TENPHG, N.HONV, N.TENLOT, N.TENNV
+19. Với mỗi phòng ban có mức lương trung bình lớn hơn 40,000, cho biết tên phòng ban và số lượng đề án mà phòng ban đó chủ trì.
+SELECT P.TENPHG, COUNT(D.MADA) AS SODEAN FROM NHANVIEN N, PHONGBAN P, DEAN D WHERE P.MAPHG = N.PHG AND P.MAPHG = D.PHONG GROUP BY P.TENPHG HAVING AVG(N.LUONG) > 40000
+20. Cho biết số đề án diễn ra tại từng địa điểm
+SELECT DDIEM_DA, COUNT(DDIEM_DA) AS SODEAN FROM DEAN GROUP BY DDIEM_DA
+21. Cho biết danh sách các đề án (MADA) có: nhân công với họ (HONV) là ‘Dinh’ hoặc , có người trưởng phòng chủ trì đề án với họ (HONV) là ‘Dinh’.
+SELECT TENDA FROM DEAN WHERE MADA IN (SELECT D.MADA FROM DEAN D, PHANCONG P, NHANVIEN N WHERE D.MADA = P.MADA AND P.MA_NVIEN = N.MANV AND N.HONV = N'Đinh')
+OR MADA IN (SELECT D.MADA FROM DEAN D, PHONGBAN B, NHANVIEN N WHERE D.PHONG = B.MAPHG AND B.TRPHG = N.MANV AND N.HONV = N'Đinh')
+22. Danh sách những nhân viên (HONV, TENLOT, TENNV) có trên 2 thân nhân.
+SELECT N.HONV, N.TENLOT, N.TENNV FROM NHANVIEN N, THANNHAN T WHERE N.MANV = T.MA_NVIEN GROUP BY N.HONV, N.TENLOT, N.TENNV HAVING COUNT(T.MA_NVIEN) > 2
+23. Danh sách những nhân viên (HONV, TENLOT, TENNV) không có thân nhân nào.
+SELECT HONV, TENLOT, TENNV FROM NHANVIEN WHERE MANV NOT IN 
+(SELECT N.MANV FROM NHANVIEN N, THANNHAN T WHERE N.MANV = T.MA_NVIEN GROUP BY N.MANV)
+24. Danh sách những trưởng phòng (HONV, TENLOT, TENNV) có tối thiểu một thân nhân.
+SELECT N.HONV, N.TENLOT, N.TENNV FROM NHANVIEN N, PHONGBAN P, THANNHAN T WHERE P.TRPHG = N.MANV AND N.MANV = T.MA_NVIEN GROUP BY N.HONV, N.TENLOT, N.TENNV 
+25. Tìm họ (HONV) của những trưởng phòng chưa có gia đình.
+SELECT N.HONV FROM NHANVIEN N, PHONGBAN P WHERE P.TRPHG = N.MANV AND N.MANV NOT IN
+(SELECT N.MANV FROM NHANVIEN N, THANNHAN T WHERE N.MANV = T.MA_NVIEN GROUP BY N.MANV)
+26. Danh sách những nhân viên (HONV, TENLOT, TENNV) làm việc trong mọi đề án của công ty
+SELECT N.HONV, N.TENLOT, N.TENNV FROM NHANVIEN N, PHANCONG P WHERE N.MANV = P.MA_NVIEN
+GROUP BY N.HONV, N.TENLOT, N.TENNV HAVING COUNT(DISTINCT P.MADA) = (SELECT COUNT(D.MADA) FROM DEAN D)
+27. Danh sách những nhân viên (HONV, TENLOT, TENNV) được phân công tất cả đề án do phòng số 4 chủ trì.
+SELECT N.HONV, N.TENLOT, N.TENNV FROM DEAN D, CONGVIEC C, PHANCONG P, NHANVIEN N
+WHERE D.MADA = C.MADA AND C.MADA = P.MADA AND C.STT = P.STT AND P.MA_NVIEN = N.MANV AND D.PHONG = 4
+GROUP BY N.HONV, N.TENLOT, N.TENNV HAVING COUNT(DISTINCT P.MADA) = (SELECT COUNT(MADA) FROM DEAN WHERE PHONG = 4)
+28. Tìm những nhân viên (HONV, TENLOT, TENNV) được phân công tất cả đề án mà nhân viên Đinh Bá Tiến làm việc
+SELECT N.HONV, N.TENLOT, N.TENNV FROM NHANVIEN N, PHANCONG P
+WHERE N.MANV = P.MA_NVIEN GROUP BY N.MANV, N.HONV, N.TENLOT, N.TENNV
+HAVING COUNT(DISTINCT P.MADA) =
+(SELECT COUNT(DISTINCT PC.MADA) FROM NHANVIEN NV, PHANCONG PC
+WHERE NV.MANV = PC.MA_NVIEN AND (NV.HONV + ' ' + NV.TENLOT + ' ' + NV.TENNV) = N'Đinh Bá Tiên')
